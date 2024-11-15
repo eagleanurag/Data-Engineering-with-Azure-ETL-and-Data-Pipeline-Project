@@ -1,0 +1,39 @@
+{
+    "name": "SalesDataPipeline",
+    "properties": {
+        "activities": [
+            {
+                "name": "CopySalesDataToBlob",
+                "type": "Copy",
+                "inputs": [
+                    {
+                        "name": "SalesFTPSource"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "BlobStorageSink"
+                    }
+                ],
+                "typeProperties": {
+                    "source": {
+                        "type": "FileSystemSource"
+                    },
+                    "sink": {
+                        "type": "BlobSink"
+                    }
+                }
+            },
+            {
+                "name": "TransformAndLoadData",
+                "type": "DatabricksSparkPythonActivity",
+                "typeProperties": {
+                    "pythonFile": "dbfs:/FileStore/scripts/transform_sales_data.py",
+                    "parameters": {
+                        "input_path": "wasbs://[container]@[storage_account].blob.core.windows.net/sample_sales_data.csv"
+                    }
+                }
+            }
+        ]
+    }
+}
